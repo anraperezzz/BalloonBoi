@@ -1,0 +1,42 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\490B\Ballloon Proj\UART.uvproj
+Project File Date:  04/28/2020
+
+<h2>Output:</h2>
+Rebuild target 'Main'
+assembling startup.s...
+compiling PLL.c...
+compiling UART.c...
+UART.c(39): warning:  #550-D: variable "delay" was set but never used
+  void UART3_Init(void){uint16_t delay;
+UART.c(58): warning:  #550-D: variable "delay" was set but never used
+  void UART2_Init(void){uint16_t delay;
+UART.c: 2 warnings, 0 errors
+compiling Main.c...
+Main.c(170): warning:  #177-D: variable "delay" was declared but never referenced
+  int main(void){ int delay;
+Main.c(171): warning:  #177-D: variable "receive" was declared but never referenced
+        int receive;
+Main.c: 2 warnings, 0 errors
+compiling SysTick.c...
+linking...
+Program Size: Code=2200 RO-data=32 RW-data=32 ZI-data=1120  
+".\UART.axf" - 0 Error(s), 4 Warning(s).
+Load "D:\\490B\\Ballloon Proj\\UART.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+</pre>
+</body>
+</html>
+rget DLL has been cancelled
+Load "D:\\490B\\Ballloon Proj\\UART.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.

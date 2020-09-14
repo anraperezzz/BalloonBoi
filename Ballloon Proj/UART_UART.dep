@@ -1,0 +1,21 @@
+Dependencies for Project 'UART', Target 'UART': (DO NOT MODIFY !)
+F (.\startup.s)(0x5DD3942E)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\Luminary--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
+F (.\PLL.c)(0x5EACFC3C)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\pll.o --omf_browse .\pll.crf --depend .\pll.d)
+I (PLL.h)(0x5DD89E54)
+I (tm4c123gh6pm.h)(0x51D4D322)
+F (.\UART.c)(0x5EBA2670)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\uart.o --omf_browse .\uart.crf --depend .\uart.d)
+I (UART.h)(0x5EAE07AE)
+I (tm4c123gh6pm.h)(0x51D4D322)
+I (D:\Keil\ARM\ARMCC\include\stdint.h)(0x51C89844)
+F (.\UARTTestMain.c)(0x5F5C21BE)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\uarttestmain.o --omf_browse .\uarttestmain.crf --depend .\uarttestmain.d)
+I (D:\Keil\ARM\ARMCC\include\stdint.h)(0x51C89844)
+I (D:\Keil\ARM\ARMCC\include\stdio.h)(0x51C89844)
+I (D:\Keil\ARM\ARMCC\include\stdbool.h)(0x51C89844)
+I (D:\Keil\ARM\ARMCC\include\string.h)(0x51C89844)
+I (tm4c123gh6pm.h)(0x51D4D322)
+I (PLL.h)(0x5DD89E54)
+I (UART.h)(0x5EAE07AE)
+I (SysTick.h)(0x5DD3942E)
+F (.\SysTick.c)(0x5DD3942E)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\systick.o --omf_browse .\systick.crf --depend .\systick.d)
+I (SysTick.h)(0x5DD3942E)
+F (.\tm4c123gh6pm.h)(0x51D4D322)()

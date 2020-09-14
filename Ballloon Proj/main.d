@@ -1,0 +1,9 @@
+.\main.o: Main.c
+.\main.o: D:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\main.o: D:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\main.o: D:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\main.o: D:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\main.o: tm4c123gh6pm.h
+.\main.o: PLL.h
+.\main.o: UART.h
+.\main.o: SysTick.h
