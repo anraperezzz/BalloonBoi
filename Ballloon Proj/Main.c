@@ -73,31 +73,40 @@ void PORTB_Init(void){
 void SPI_Setup(void){
     //Sets up SPI0  PA2 PA3 PA4 PA5
     //              Clk Fss Rx  Tx
-    SYSCTL_RCGCSSI_R    |=  0x01;   //Enable SSI Pg 346
-    SYSCTL_RCGCGPIO_R   |=  0x01;   //Enable Clock Pg 340
-    while((SYSCTL_PRGPIO_R&0x01) == 0){};   // ready?
-    GPIO_PORTA_AFSEL_R  |=  0x3C;   //Enable AF    Pg 671
-    GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFF0000FF)+0x00222200;//PortCntrl Pg 688
-    GPIO_PORTA_DEN_R    |=  0x3C;   //Enable Dig   Pg 649
-    GPIO_PORTA_AMSEL_R = 0;         // disable analog functionality on PA
-    SSI0_CR1_R          &=  ~0x00000002;    //Disable SSE
-    SSI0_CR1_R          =   0x00000000;     //MASTER
-    SSI0_CC_R           |=  0x00;   //CLK SOURCE
+    SYSCTL_RCGCSSI_R    |=  0x01;   // Activate SSI0
+    SYSCTL_RCGCGPIO_R   |=  0x01;   // Activate port A
+    while((SYSCTL_PRGPIO_R&0x01) == 0){};   // Wait for clock
+			
+    GPIO_PORTA_AFSEL_R  |=  0x3C;   //Enable ALT PA2, 3, 4, 5
+		GPIO_PORTA_DEN_R    |=  0x3C;   //Enable Dig  PA2, 3, 4, 5
+																		// configure PA2, 3, 4, 5 as SSI
+    GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFF0000FF)+0x00222200;
+    GPIO_PORTA_AMSEL_R &= ~0x3C;    // disable AF on PA2, 3, 4, 5
+			
+    SSI0_CR1_R          &=  ~SSI_CR1_SSE;    //Disable SSE
+    SSI0_CR1_R          &=  ~SSI_CR1_MS;     //MASTER
+												// configure for system clock/PLL baud clock source
+    SSI0_CC_R            = (SSI0_CC_R&~SSI_CC_CS_M)+SSI_CC_CS_SYSPLL;
     SSI0_CPSR_R         |=  0x50;   //CLK Divider 1MHz
-    SSI0_CR0_R          |=  0x0000; //No serial Clock rate
-    SSI0_CR0_R          |=  0x0000; //CLK, Polarity, phase
-    SSI0_CR0_R          |=  0x0000; //Freescale mode
-    SSI0_CR0_R          |=  0x000F; //Data Size
-    SSI0_CR1_R          |=  0x00000002; //Enable SSI
+		SSI0_CR0_R &= ~(SSI_CR0_SCR_M |       // SCR = 0 (8 Mbps data rate)
+										SSI_CR0_SPH |         // SPH = 0
+										SSI_CR0_SPO);         // SPO = 0
+																					// FRF = Freescale format
+		SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_FRF_M)+SSI_CR0_FRF_MOTO;
+																					// DSS = 16-bit data
+		SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_DSS_M)+SSI_CR0_DSS_16;
+    SSI0_CR1_R          |=  SSI_CR1_SSE; 	//Enable SSI
 }
 
 
-uint16_t Com_SPI(uint16_t data){    uint16_t receive;
-    while((SSI0_SR_R&0x2)==0){};    //While tx full
-    SSI0_DR_R           =   data;
-    while((SSI0_SR_R&0x4)==0){};// while rx empty
-    receive = SSI0_DR_R;    // acknowledge response
+uint16_t com_SPI0(uint16_t address, uint16_t data, uint16_t code){uint16_t receive;
+    while((SSI0_SR_R&SSI_SR_TNF)==0){};      // Wait for Tx
+    SSI0_DR_R = ((address | code ) << 8) | data;// Data Out
+    while((SSI0_SR_R&SSI_SR_RNE)==0){};			// While rx is not full
+    receive = SSI0_DR_R;    					// Data in
+		receive &= 0x00FF;
     return receive;
+
 }
 
 void PWM_Init(uint16_t period, uint16_t duty){volatile unsigned long delay;
@@ -168,15 +177,19 @@ void PWM_PA6_Duty(uint16_t duty){
 	PWM1_1_CMPA_R = duty - 1;				// Duty PA6
 }
 int main(void){ int delay;
-	int receive;
+	uint16_t spi;
 	//char string[5]; 
 	go = 0;
 	//unsigned long pwm_value, last_pwm_value, frequency;
 	PLL_Init();
 	UART2_Init();
 	UART3_Init();
-	//SPI_Setup();
-	UART3_OutString("Input Command:\n\r");
+	SPI_Setup();
+	//UART3_OutString("Input Command:\n\r");
+	com_SPI0(0x6A, 0x00, 0x00);
+	spi = com_SPI0(0x6A, 0x00, 0x80);
+	UART3_OutString("Test:\n\r");
+	UART3_OutUDec(spi);UART3_OutString("\r\n");
 	per = 0x0FA0; // fa0 20KHz
 	duty = 0x0000;	// 7d0 50%
 	PWM_Init( per, duty);
@@ -213,12 +226,13 @@ int main(void){ int delay;
 			//UART3_OutString("--->");
 			//UART3_OutUDec();
 			
-			UART3_OutString("\n\rInput Command:\n\r");
+			//UART3_OutString("\n\rInput Command:\n\r");
 			go = 0;
+			
 		}
 		/*
 		if (go == 2){
-			receive = Com_SPI(0xC100); // 1100 0101 0000 0000
+			receive = read_SPI0(0xC100); // 1100 0101 0000 0000
 			receive &= 0x00FF;//0x00FF;
 			UART3_OutString("SPI--->");
 			UART3_OutUDec(receive);
@@ -226,7 +240,7 @@ int main(void){ int delay;
 			go = 0;
 		}
 		*/
-		//receive = Com_SPI(0xC100); // 1100 0011 0000 0000
+		//receive = read_SPI0(0xC100); // 1100 0011 0000 0000
 		//receive &= 0x00FF;
 		//UART3_OutUDec(receive);UART3_OutString("\r\n");
 		/*
