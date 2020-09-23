@@ -17,13 +17,17 @@ UART.c(58): warning:  #550-D: variable "delay" was set but never used
   void UART2_Init(void){uint16_t delay;
 UART.c: 2 warnings, 0 errors
 compiling Main.c...
-Main.c(179): warning:  #177-D: variable "delay" was declared but never referenced
+Main.c(30): warning:  #1295-D: Deprecated declaration MPU_9250_Init - give arg types
+  void MPU_9250_Init();
+Main.c(208): warning:  #177-D: variable "delay" was declared but never referenced
   int main(void){ int delay;
-Main.c: 1 warning, 0 errors
+Main.c(209): warning:  #177-D: variable "spi" was declared but never referenced
+        uint16_t spi;
+Main.c: 3 warnings, 0 errors
 compiling SysTick.c...
 linking...
-Program Size: Code=2524 RO-data=32 RW-data=32 ZI-data=1120  
-".\UART.axf" - 0 Error(s), 3 Warning(s).
+Program Size: Code=2832 RO-data=32 RW-data=32 ZI-data=1120  
+".\UART.axf" - 0 Error(s), 5 Warning(s).
 Load "D:\\490B\\BalloonBoi\\Ballloon Proj\\UART.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.

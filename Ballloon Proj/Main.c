@@ -27,6 +27,7 @@ unsigned int duty;
 
 
 void PWM_Init(uint16_t period, uint16_t duty); 
+void MPU_9250_Init();
 void PWM_PF23_Duty(uint16_t duty); 
 void PWM_PF1_Duty(uint16_t duty);
 void PWM_PA6_Duty(uint16_t duty);
@@ -70,7 +71,7 @@ void PORTB_Init(void){
   GPIO_PORTB_DEN_R |= 0xFF;          // 7) enable digital pins P7-PB0   
 }
 
-void SPI_Setup(void){
+void SPI0_Setup(void){
     //Sets up SPI0  PA2 PA3 PA4 PA5
     //              Clk Fss Rx  Tx
     SYSCTL_RCGCSSI_R    |=  0x01;   // Activate SSI0
@@ -109,6 +110,34 @@ uint16_t com_SPI0(uint16_t address, uint16_t data, uint16_t code){uint16_t recei
 
 }
 
+void MPU_9250_Init(){uint16_t rx;
+	com_SPI0(0x6A, 0x10, 0x00);	//Enable SPI only
+	com_SPI0(0x1D, 0x06, 0x00);	//Set accelerometers low pass filter at 5Hz
+	com_SPI0(0x1A, 0x06, 0x00);	//Set gyroscope low pass filter at 5Hz
+	
+	com_SPI0(0x1B, 0x10, 0x00);	// Configure gyroscope range 1000dps
+	com_SPI0(0x1C, 0x08, 0x00); // Configure accelerometers range 4G
+	
+	rx = com_SPI0(0x6A, 0x00, 0x80);
+	UART3_OutString("Test:\n\r");
+	UART3_OutUDec(rx);UART3_OutString("\r\n");
+	rx = com_SPI0(0x1D, 0x00, 0x80);
+	UART3_OutString("Test:\n\r");
+	UART3_OutUDec(rx);UART3_OutString("\r\n");
+	rx = com_SPI0(0x1A, 0x00, 0x80);
+	UART3_OutString("Test:\n\r");
+	UART3_OutUDec(rx);UART3_OutString("\r\n");
+	
+	rx = com_SPI0(0x1B, 0x00, 0x80);
+	UART3_OutString("Test:\n\r");
+	UART3_OutUDec(rx);UART3_OutString("\r\n");
+	rx = com_SPI0(0x1C, 0x00, 0x80);
+	UART3_OutString("Test:\n\r");
+	UART3_OutUDec(rx);UART3_OutString("\r\n");
+	
+	
+}
+
 void PWM_Init(uint16_t period, uint16_t duty){volatile unsigned long delay;
 	// This function enables PF 1, 2, 3 and PA6. NOTE: this function assumes that the clock is 80MHz
 	// Generator 1, Generator 2, Generator 3
@@ -118,7 +147,7 @@ void PWM_Init(uint16_t period, uint16_t duty){volatile unsigned long delay;
 	
 	SYSCTL_RCGCGPIO_R |= 0x21;		  // Enable and provide a clock to GPIO Port F and A in Run mode
 
-	delay = SYSCTL_RCGCGPIO_R;   		// Wait
+	while((SYSCTL_PRGPIO_R&0x21) == 0){};   // Wait for clock
 	
 	GPIO_PORTF_PCTL_R &= ~0x0000FFF0;  	// Turn off pins  PF1, PF2, PF3
 	GPIO_PORTF_PCTL_R|= 0x00005550;	// Turn on M1 PWM5, PWM6, PWM7
@@ -126,7 +155,7 @@ void PWM_Init(uint16_t period, uint16_t duty){volatile unsigned long delay;
 	GPIO_PORTF_AFSEL_R |= 0x0E;			// Alternate function select 1,2,3
 	GPIO_PORTF_AMSEL_R &= ~0x0E;		// Disable Analog mode 1,2,3
 	
-	GPIO_PORTA_PCTL_R &= ~0x0F00000;  	// Turn off pins  PA6
+	GPIO_PORTA_PCTL_R&=~0x0F000000;  	// Turn off pins  PA6
 	GPIO_PORTA_PCTL_R|= 0x05000000;	// Turn on M1 PWM2
 	GPIO_PORTA_DEN_R |= 0x40;				// Pin digital enable 6
 	GPIO_PORTA_AFSEL_R |= 0x40;			// Alternate function select 6
@@ -184,17 +213,19 @@ int main(void){ int delay;
 	PLL_Init();
 	UART2_Init();
 	UART3_Init();
-	SPI_Setup();
-	//UART3_OutString("Input Command:\n\r");
-	com_SPI0(0x6A, 0x00, 0x00);
-	spi = com_SPI0(0x6A, 0x00, 0x80);
-	UART3_OutString("Test:\n\r");
-	UART3_OutUDec(spi);UART3_OutString("\r\n");
+	SysTick_Init();
+	SPI0_Setup();
+	PWM_Init( per, duty);
+	MPU_9250_Init();
 	per = 0x0FA0; // fa0 20KHz
 	duty = 0x0000;	// 7d0 50%
-	PWM_Init( per, duty);
+	
   while(1){
-		
+		SysTick_Wait1us(100000);
+		UART3_OutString("Test:\n\r");
+		UART3_OutUDec(com_SPI0(0x43, 0x00, 0x80));UART3_OutString("\r\n");
+
+
 		if (go == 1){
 			//NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 			//duty = (to_number(rxChar) * ((per-1))) / (255);
