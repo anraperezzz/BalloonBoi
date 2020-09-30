@@ -20,7 +20,10 @@ int command = 0;
 int height = 0;
 int left = 0;
 int right = 0;
+int pIndex = 0;
 // char rxChar[4];//for PC application,uncomment this
+char message[5];
+char packet[5];
 unsigned int go;
 unsigned int per;
 unsigned int duty;
@@ -37,10 +40,16 @@ void EnableInterrupts(void);
 unsigned long to_number(char string[4]); 
 
 void UART2_Handler(){//this interrupt routine is for receiving data from bluetooth
-		command = UART2_DR_R;
-		height = (command & 0x00C0) >> 6;
-		left =   (command & 0x0038) >> 3;
-		right =  command & 0x0007;
+		packet[pIndex] = UART2_DR_R;
+		pIndex++;
+		if (pIndex == 5) {
+			go = 1;
+			pIndex = 0;
+		}
+		//command = UART2_DR_R;
+		//height = (command & 0x00C0) >> 6;
+		//left =   (command & 0x0038) >> 3;
+		//right =  command & 0x0007;
     /* rxChar[i] = UART2_DR_R;
 		UART3_OutChar(rxChar[i]);
 		i++;
@@ -57,7 +66,7 @@ void UART2_Handler(){//this interrupt routine is for receiving data from bluetoo
 			go = 2;
 		}
 		*/
-		go = 1;
+		
 		UART2_ICR_R=UART_ICR_RXIC;//clear interrupt
 }
 
@@ -207,6 +216,7 @@ void PWM_PA6_Duty(uint16_t duty){
 }
 int main(void){ int delay;
 	uint16_t spi;
+	unsigned char checksum;
 	//char string[5]; 
 	go = 0;
 	//unsigned long pwm_value, last_pwm_value, frequency;
@@ -216,17 +226,38 @@ int main(void){ int delay;
 	SysTick_Init();
 	SPI0_Setup();
 	PWM_Init( per, duty);
-	MPU_9250_Init();
+	//MPU_9250_Init();
 	per = 0x0FA0; // fa0 20KHz
 	duty = 0x0000;	// 7d0 50%
+	//message[0] = '$';
+	//message[1] = 'C';
+	//message[2] = 'C';
+	//message[3] = 'D';
+	//checksum = (char)(message[0] + message[1] + message[2] + message[3]);
+	//message[4] = (char) checksum ;
+	//UART3_OutString(message);
 	
+  
   while(1){
-		SysTick_Wait1us(100000);
-		UART3_OutString("Test:\n\r");
-		UART3_OutUDec(com_SPI0(0x43, 0x00, 0x80));UART3_OutString("\r\n");
+		
+		//while((UART3_FR_R&UART_FR_TXFF) != 0);
+		//UART3_DR_R = 0xA5;
+		//while((UART3_FR_R&UART_FR_TXFF) != 0);
+		//UART3_DR_R = 74;
+		
+		//SysTick_Wait1us(500000);
+		
+		//UART3_OutString("$969!");
+		//SysTick_Wait1us(1000000);
+		//UART3_OutString("$20!!");
+		//UART3_OutString("Test:\n\r");
+		//UART3_OutUDec(com_SPI0(0x43, 0x00, 0x80));UART3_OutString("\r\n");
+		//SysTick_Wait1us(1000000);
+
 
 
 		if (go == 1){
+			UART3_OutString(packet);
 			//NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 			//duty = (to_number(rxChar) * ((per-1))) / (255);
 			//UART3_OutString(rxChar);
@@ -238,9 +269,9 @@ int main(void){ int delay;
 			UART3_OutUDec(right);
 			UART3_OutString("\n\r");
 			*/
-			height = (height * 0x0F9F) / 3;
-			left = (left * 0x0F9F) / 7;
-			right = (right * 0x0F9F) / 7;
+			//height = (height * 0x0F9F) / 3;
+			//left = (left * 0x0F9F) / 7;
+			//right = (right * 0x0F9F) / 7;
 			/*
 			UART3_OutUDec(command);
 			UART3_OutString("\n\r");
@@ -250,9 +281,9 @@ int main(void){ int delay;
 			UART3_OutString("\n\r");
 			UART3_OutUDec(right);
 			*/
-			PWM_PF23_Duty(height);
-			PWM_PA6_Duty(left);
-			PWM_PF1_Duty(right);
+			//PWM_PF23_Duty(height);
+			//PWM_PA6_Duty(left);
+			//PWM_PF1_Duty(right);
 			//UART3_OutUDec(duty);
 			//UART3_OutString("--->");
 			//UART3_OutUDec();

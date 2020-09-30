@@ -36,21 +36,14 @@ Section Cross References
     main.o(i.MPU_9250_Init) refers to main.o(i.com_SPI0) for com_SPI0
     main.o(i.MPU_9250_Init) refers to uart.o(i.UART3_OutString) for UART3_OutString
     main.o(i.MPU_9250_Init) refers to uart.o(i.UART3_OutUDec) for UART3_OutUDec
-    main.o(i.UART2_Handler) refers to main.o(.data) for command
+    main.o(i.UART2_Handler) refers to main.o(.data) for packet
     main.o(i.main) refers to pll.o(i.PLL_Init) for PLL_Init
     main.o(i.main) refers to uart.o(i.UART2_Init) for UART2_Init
     main.o(i.main) refers to uart.o(i.UART3_Init) for UART3_Init
     main.o(i.main) refers to systick.o(i.SysTick_Init) for SysTick_Init
     main.o(i.main) refers to main.o(i.SPI0_Setup) for SPI0_Setup
     main.o(i.main) refers to main.o(i.PWM_Init) for PWM_Init
-    main.o(i.main) refers to main.o(i.MPU_9250_Init) for MPU_9250_Init
-    main.o(i.main) refers to systick.o(i.SysTick_Wait1us) for SysTick_Wait1us
     main.o(i.main) refers to uart.o(i.UART3_OutString) for UART3_OutString
-    main.o(i.main) refers to main.o(i.com_SPI0) for com_SPI0
-    main.o(i.main) refers to uart.o(i.UART3_OutUDec) for UART3_OutUDec
-    main.o(i.main) refers to main.o(i.PWM_PF23_Duty) for PWM_PF23_Duty
-    main.o(i.main) refers to main.o(i.PWM_PA6_Duty) for PWM_PA6_Duty
-    main.o(i.main) refers to main.o(i.PWM_PF1_Duty) for PWM_PF1_Duty
     main.o(i.main) refers to main.o(.data) for go
     systick.o(i.SysTick_Wait1us) refers to systick.o(i.SysTick_Wait) for SysTick_Wait
     __main.o(!!!main) refers to rtentry.o(.ARM.Collect$$rtentry$$00000000) for __rt_entry
@@ -167,6 +160,7 @@ Removing Unused input sections from the image.
     Removing uart.o(i.UART3_InChar), (24 bytes).
     Removing uart.o(i.UART3_InCharNonBlocking), (28 bytes).
     Removing uart.o(i.UART3_InString), (66 bytes).
+    Removing uart.o(i.UART3_OutUDec), (42 bytes).
     Removing uart.o(i.UART_InChar), (24 bytes).
     Removing uart.o(i.UART_InCharNonBlocking), (28 bytes).
     Removing uart.o(i.UART_InString), (66 bytes).
@@ -176,10 +170,17 @@ Removing Unused input sections from the image.
     Removing uart.o(i.UART_OutString), (22 bytes).
     Removing uart.o(i.UART_OutUDec), (42 bytes).
     Removing uart.o(i.UART_OutUHex), (52 bytes).
+    Removing main.o(i.MPU_9250_Init), (216 bytes).
     Removing main.o(i.PORTB_Init), (96 bytes).
+    Removing main.o(i.PWM_PA6_Duty), (12 bytes).
+    Removing main.o(i.PWM_PF1_Duty), (12 bytes).
+    Removing main.o(i.PWM_PF23_Duty), (24 bytes).
+    Removing main.o(i.com_SPI0), (56 bytes).
     Removing main.o(i.to_number), (50 bytes).
+    Removing systick.o(i.SysTick_Wait), (32 bytes).
+    Removing systick.o(i.SysTick_Wait1us), (22 bytes).
 
-23 unused section(s) (total 956 bytes) removed from the image.
+31 unused section(s) (total 1372 bytes) removed from the image.
 
 ==============================================================================
 
@@ -196,10 +197,10 @@ Image Symbol Table
     ../clib/angel/boardlib.s                 0x00000000   Number         0  boardinit3.o ABSOLUTE
     ../clib/angel/handlers.s                 0x00000000   Number         0  __scatter_zi.o ABSOLUTE
     ../clib/angel/handlers.s                 0x00000000   Number         0  __scatter_copy.o ABSOLUTE
-    ../clib/angel/kernel.s                   0x00000000   Number         0  rtentry4.o ABSOLUTE
-    ../clib/angel/kernel.s                   0x00000000   Number         0  rtentry2.o ABSOLUTE
-    ../clib/angel/kernel.s                   0x00000000   Number         0  rtentry.o ABSOLUTE
     ../clib/angel/kernel.s                   0x00000000   Number         0  rtexit.o ABSOLUTE
+    ../clib/angel/kernel.s                   0x00000000   Number         0  rtentry.o ABSOLUTE
+    ../clib/angel/kernel.s                   0x00000000   Number         0  rtentry2.o ABSOLUTE
+    ../clib/angel/kernel.s                   0x00000000   Number         0  rtentry4.o ABSOLUTE
     ../clib/angel/kernel.s                   0x00000000   Number         0  rtexit2.o ABSOLUTE
     ../clib/angel/rt.s                       0x00000000   Number         0  rt_raise.o ABSOLUTE
     ../clib/angel/scatter.s                  0x00000000   Number         0  __scatter.o ABSOLUTE
@@ -208,33 +209,33 @@ Image Symbol Table
     ../clib/angel/sys.s                      0x00000000   Number         0  use_no_semi.o ABSOLUTE
     ../clib/angel/sys.s                      0x00000000   Number         0  sys_stackheap_outer.o ABSOLUTE
     ../clib/angel/sys.s                      0x00000000   Number         0  libspace.o ABSOLUTE
-    ../clib/angel/sysapp.c                   0x00000000   Number         0  sys_command.o ABSOLUTE
     ../clib/angel/sysapp.c                   0x00000000   Number         0  sys_wrch.o ABSOLUTE
+    ../clib/angel/sysapp.c                   0x00000000   Number         0  sys_command.o ABSOLUTE
     ../clib/angel/sysapp.c                   0x00000000   Number         0  sys_exit.o ABSOLUTE
-    ../clib/armsys.c                         0x00000000   Number         0  _get_argv_nomalloc.o ABSOLUTE
     ../clib/armsys.c                         0x00000000   Number         0  no_argv.o ABSOLUTE
+    ../clib/armsys.c                         0x00000000   Number         0  _get_argv_nomalloc.o ABSOLUTE
     ../clib/armsys.c                         0x00000000   Number         0  argv_veneer.o ABSOLUTE
     ../clib/armsys.c                         0x00000000   Number         0  argv_veneer.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  hrguard.o ABSOLUTE
     ../clib/heapaux.c                        0x00000000   Number         0  heapauxi.o ABSOLUTE
-    ../clib/libinit.s                        0x00000000   Number         0  libshutdown.o ABSOLUTE
-    ../clib/libinit.s                        0x00000000   Number         0  libshutdown2.o ABSOLUTE
     ../clib/libinit.s                        0x00000000   Number         0  libinit.o ABSOLUTE
+    ../clib/libinit.s                        0x00000000   Number         0  libshutdown2.o ABSOLUTE
     ../clib/libinit.s                        0x00000000   Number         0  libinit2.o ABSOLUTE
-    ../clib/signal.c                         0x00000000   Number         0  defsig_general.o ABSOLUTE
+    ../clib/libinit.s                        0x00000000   Number         0  libshutdown.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_exit.o ABSOLUTE
-    ../clib/signal.c                         0x00000000   Number         0  defsig_other.o ABSOLUTE
-    ../clib/signal.c                         0x00000000   Number         0  defsig_segv_inner.o ABSOLUTE
-    ../clib/signal.c                         0x00000000   Number         0  defsig_cppl_inner.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_pvfn_inner.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_stak_inner.o ABSOLUTE
-    ../clib/signal.c                         0x00000000   Number         0  defsig_rtred_inner.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_fpe_inner.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_abrt_inner.o ABSOLUTE
+    ../clib/signal.c                         0x00000000   Number         0  defsig_general.o ABSOLUTE
+    ../clib/signal.c                         0x00000000   Number         0  defsig_cppl_inner.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  __raise.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_rtmem_inner.o ABSOLUTE
+    ../clib/signal.c                         0x00000000   Number         0  defsig_rtred_inner.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_rtmem_formal.o ABSOLUTE
     ../clib/signal.c                         0x00000000   Number         0  defsig_rtmem_outer.o ABSOLUTE
+    ../clib/signal.c                         0x00000000   Number         0  defsig_other.o ABSOLUTE
+    ../clib/signal.c                         0x00000000   Number         0  defsig_segv_inner.o ABSOLUTE
     ../clib/signal.s                         0x00000000   Number         0  defsig.o ABSOLUTE
     ../clib/stdlib.c                         0x00000000   Number         0  exit.o ABSOLUTE
     ../fplib/fpinit.s                        0x00000000   Number         0  fpinit.o ABSOLUTE
@@ -295,30 +296,22 @@ Image Symbol Table
     .text                                    0x000003b4   Section        0  sys_exit.o(.text)
     .text                                    0x000003c0   Section        2  use_no_semi.o(.text)
     .text                                    0x000003c2   Section        0  indicate_semi.o(.text)
-    i.MPU_9250_Init                          0x000003c4   Section        0  main.o(i.MPU_9250_Init)
-    i.PLL_Init                               0x0000049c   Section        0  pll.o(i.PLL_Init)
-    i.PWM_Init                               0x00000518   Section        0  main.o(i.PWM_Init)
-    i.PWM_PA6_Duty                           0x000006a8   Section        0  main.o(i.PWM_PA6_Duty)
-    i.PWM_PF1_Duty                           0x000006b4   Section        0  main.o(i.PWM_PF1_Duty)
-    i.PWM_PF23_Duty                          0x000006c0   Section        0  main.o(i.PWM_PF23_Duty)
-    i.SPI0_Setup                             0x000006d8   Section        0  main.o(i.SPI0_Setup)
-    i.SysTick_Init                           0x000007b8   Section        0  systick.o(i.SysTick_Init)
-    i.SysTick_Wait                           0x000007d0   Section        0  systick.o(i.SysTick_Wait)
-    i.SysTick_Wait1us                        0x000007f0   Section        0  systick.o(i.SysTick_Wait1us)
-    i.UART2_Handler                          0x00000808   Section        0  main.o(i.UART2_Handler)
-    i.UART2_Init                             0x0000085c   Section        0  uart.o(i.UART2_Init)
-    i.UART3_Init                             0x000008fc   Section        0  uart.o(i.UART3_Init)
-    i.UART3_OutChar                          0x00000988   Section        0  uart.o(i.UART3_OutChar)
-    i.UART3_OutString                        0x000009a0   Section        0  uart.o(i.UART3_OutString)
-    i.UART3_OutUDec                          0x000009b6   Section        0  uart.o(i.UART3_OutUDec)
-    i.com_SPI0                               0x000009e0   Section        0  main.o(i.com_SPI0)
-    i.main                                   0x00000a18   Section        0  main.o(i.main)
-    .data                                    0x20000000   Section       32  main.o(.data)
-    .bss                                     0x20000020   Section       96  libspace.o(.bss)
-    HEAP                                     0x20000080   Section        0  startup.o(HEAP)
-    STACK                                    0x20000080   Section     1024  startup.o(STACK)
-    HeapMem                                  0x20000080   Data           0  startup.o(HEAP)
-    StackMem                                 0x20000080   Data           0  startup.o(STACK)
+    i.PLL_Init                               0x000003c4   Section        0  pll.o(i.PLL_Init)
+    i.PWM_Init                               0x00000440   Section        0  main.o(i.PWM_Init)
+    i.SPI0_Setup                             0x000005d0   Section        0  main.o(i.SPI0_Setup)
+    i.SysTick_Init                           0x000006b0   Section        0  systick.o(i.SysTick_Init)
+    i.UART2_Handler                          0x000006c8   Section        0  main.o(i.UART2_Handler)
+    i.UART2_Init                             0x0000070c   Section        0  uart.o(i.UART2_Init)
+    i.UART3_Init                             0x000007ac   Section        0  uart.o(i.UART3_Init)
+    i.UART3_OutChar                          0x00000838   Section        0  uart.o(i.UART3_OutChar)
+    i.UART3_OutString                        0x00000850   Section        0  uart.o(i.UART3_OutString)
+    i.main                                   0x00000868   Section        0  main.o(i.main)
+    .data                                    0x20000000   Section       48  main.o(.data)
+    .bss                                     0x20000030   Section       96  libspace.o(.bss)
+    HEAP                                     0x20000090   Section        0  startup.o(HEAP)
+    STACK                                    0x20000090   Section     1024  startup.o(STACK)
+    HeapMem                                  0x20000090   Data           0  startup.o(HEAP)
+    StackMem                                 0x20000090   Data           0  startup.o(STACK)
 
     Global Symbols
 
@@ -541,36 +534,31 @@ Image Symbol Table
     __I$use$semihosting                      0x000003c1   Thumb Code     0  use_no_semi.o(.text)
     __use_no_semihosting_swi                 0x000003c1   Thumb Code     2  use_no_semi.o(.text)
     __semihosting_library_function           0x000003c3   Thumb Code     0  indicate_semi.o(.text)
-    MPU_9250_Init                            0x000003c5   Thumb Code   204  main.o(i.MPU_9250_Init)
-    PLL_Init                                 0x0000049d   Thumb Code   118  pll.o(i.PLL_Init)
-    PWM_Init                                 0x00000519   Thumb Code   336  main.o(i.PWM_Init)
-    PWM_PA6_Duty                             0x000006a9   Thumb Code     8  main.o(i.PWM_PA6_Duty)
-    PWM_PF1_Duty                             0x000006b5   Thumb Code     8  main.o(i.PWM_PF1_Duty)
-    PWM_PF23_Duty                            0x000006c1   Thumb Code    14  main.o(i.PWM_PF23_Duty)
-    SPI0_Setup                               0x000006d9   Thumb Code   190  main.o(i.SPI0_Setup)
-    SysTick_Init                             0x000007b9   Thumb Code    24  systick.o(i.SysTick_Init)
-    SysTick_Wait                             0x000007d1   Thumb Code    32  systick.o(i.SysTick_Wait)
-    SysTick_Wait1us                          0x000007f1   Thumb Code    22  systick.o(i.SysTick_Wait1us)
-    UART2_Handler                            0x00000809   Thumb Code    58  main.o(i.UART2_Handler)
-    UART2_Init                               0x0000085d   Thumb Code   126  uart.o(i.UART2_Init)
-    UART3_Init                               0x000008fd   Thumb Code   108  uart.o(i.UART3_Init)
-    UART3_OutChar                            0x00000989   Thumb Code    18  uart.o(i.UART3_OutChar)
-    UART3_OutString                          0x000009a1   Thumb Code    22  uart.o(i.UART3_OutString)
-    UART3_OutUDec                            0x000009b7   Thumb Code    42  uart.o(i.UART3_OutUDec)
-    com_SPI0                                 0x000009e1   Thumb Code    50  main.o(i.com_SPI0)
-    main                                     0x00000a19   Thumb Code   208  main.o(i.main)
-    Region$$Table$$Base                      0x00000b10   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x00000b30   Number         0  anon$$obj.o(Region$$Table)
+    PLL_Init                                 0x000003c5   Thumb Code   118  pll.o(i.PLL_Init)
+    PWM_Init                                 0x00000441   Thumb Code   336  main.o(i.PWM_Init)
+    SPI0_Setup                               0x000005d1   Thumb Code   190  main.o(i.SPI0_Setup)
+    SysTick_Init                             0x000006b1   Thumb Code    24  systick.o(i.SysTick_Init)
+    UART2_Handler                            0x000006c9   Thumb Code    52  main.o(i.UART2_Handler)
+    UART2_Init                               0x0000070d   Thumb Code   126  uart.o(i.UART2_Init)
+    UART3_Init                               0x000007ad   Thumb Code   108  uart.o(i.UART3_Init)
+    UART3_OutChar                            0x00000839   Thumb Code    18  uart.o(i.UART3_OutChar)
+    UART3_OutString                          0x00000851   Thumb Code    22  uart.o(i.UART3_OutString)
+    main                                     0x00000869   Thumb Code    80  main.o(i.main)
+    Region$$Table$$Base                      0x000008c8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x000008e8   Number         0  anon$$obj.o(Region$$Table)
     i                                        0x20000000   Data           1  main.o(.data)
     command                                  0x20000004   Data           4  main.o(.data)
     height                                   0x20000008   Data           4  main.o(.data)
     left                                     0x2000000c   Data           4  main.o(.data)
     right                                    0x20000010   Data           4  main.o(.data)
-    go                                       0x20000014   Data           4  main.o(.data)
-    per                                      0x20000018   Data           4  main.o(.data)
-    duty                                     0x2000001c   Data           4  main.o(.data)
-    __libspace_start                         0x20000020   Data          96  libspace.o(.bss)
-    __temporary_stack_top$libspace           0x20000080   Data           0  libspace.o(.bss)
+    pIndex                                   0x20000014   Data           4  main.o(.data)
+    message                                  0x20000018   Data           5  main.o(.data)
+    packet                                   0x2000001d   Data           5  main.o(.data)
+    go                                       0x20000024   Data           4  main.o(.data)
+    per                                      0x20000028   Data           4  main.o(.data)
+    duty                                     0x2000002c   Data           4  main.o(.data)
+    __libspace_start                         0x20000030   Data          96  libspace.o(.bss)
+    __temporary_stack_top$libspace           0x20000090   Data           0  libspace.o(.bss)
 
 
 
@@ -580,9 +568,9 @@ Memory Map of the image
 
   Image Entry point : 0x0000026d
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x00000b50, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x00000000, Size: 0x00000918, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Base: 0x00000000, Size: 0x00000b30, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Base: 0x00000000, Size: 0x000008e8, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -641,42 +629,34 @@ Memory Map of the image
     0x000003c0   0x00000002   Code   RO          410    .text               c_w.l(use_no_semi.o)
     0x000003c2   0x00000000   Code   RO          412    .text               c_w.l(indicate_semi.o)
     0x000003c2   0x00000002   PAD
-    0x000003c4   0x000000d8   Code   RO          199    i.MPU_9250_Init     main.o
-    0x0000049c   0x0000007c   Code   RO           12    i.PLL_Init          pll.o
-    0x00000518   0x00000190   Code   RO          201    i.PWM_Init          main.o
-    0x000006a8   0x0000000c   Code   RO          202    i.PWM_PA6_Duty      main.o
-    0x000006b4   0x0000000c   Code   RO          203    i.PWM_PF1_Duty      main.o
-    0x000006c0   0x00000018   Code   RO          204    i.PWM_PF23_Duty     main.o
-    0x000006d8   0x000000e0   Code   RO          205    i.SPI0_Setup        main.o
-    0x000007b8   0x00000018   Code   RO          284    i.SysTick_Init      systick.o
-    0x000007d0   0x00000020   Code   RO          285    i.SysTick_Wait      systick.o
-    0x000007f0   0x00000016   Code   RO          286    i.SysTick_Wait1us   systick.o
-    0x00000806   0x00000002   PAD
-    0x00000808   0x00000054   Code   RO          206    i.UART2_Handler     main.o
-    0x0000085c   0x000000a0   Code   RO           37    i.UART2_Init        uart.o
-    0x000008fc   0x0000008c   Code   RO           44    i.UART3_Init        uart.o
-    0x00000988   0x00000018   Code   RO           45    i.UART3_OutChar     uart.o
-    0x000009a0   0x00000016   Code   RO           46    i.UART3_OutString   uart.o
-    0x000009b6   0x0000002a   Code   RO           47    i.UART3_OutUDec     uart.o
-    0x000009e0   0x00000038   Code   RO          207    i.com_SPI0          main.o
-    0x00000a18   0x000000f8   Code   RO          208    i.main              main.o
-    0x00000b10   0x00000020   Data   RO          464    Region$$Table       anon$$obj.o
+    0x000003c4   0x0000007c   Code   RO           12    i.PLL_Init          pll.o
+    0x00000440   0x00000190   Code   RO          201    i.PWM_Init          main.o
+    0x000005d0   0x000000e0   Code   RO          205    i.SPI0_Setup        main.o
+    0x000006b0   0x00000018   Code   RO          284    i.SysTick_Init      systick.o
+    0x000006c8   0x00000044   Code   RO          206    i.UART2_Handler     main.o
+    0x0000070c   0x000000a0   Code   RO           37    i.UART2_Init        uart.o
+    0x000007ac   0x0000008c   Code   RO           44    i.UART3_Init        uart.o
+    0x00000838   0x00000018   Code   RO           45    i.UART3_OutChar     uart.o
+    0x00000850   0x00000016   Code   RO           46    i.UART3_OutString   uart.o
+    0x00000866   0x00000002   PAD
+    0x00000868   0x00000060   Code   RO          208    i.main              main.o
+    0x000008c8   0x00000020   Data   RO          464    Region$$Table       anon$$obj.o
 
 
-    Execution Region ER_RW (Base: 0x20000000, Size: 0x00000020, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Base: 0x20000000, Size: 0x00000030, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x00000020   Data   RW          210    .data               main.o
+    0x20000000   0x00000030   Data   RW          210    .data               main.o
 
 
-    Execution Region ER_ZI (Base: 0x20000020, Size: 0x00000460, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Base: 0x20000030, Size: 0x00000460, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000020   0x00000060   Zero   RW          341    .bss                c_w.l(libspace.o)
-    0x20000080   0x00000000   Zero   RW            2    HEAP                startup.o
-    0x20000080   0x00000400   Zero   RW            1    STACK               startup.o
+    0x20000030   0x00000060   Zero   RW          341    .bss                c_w.l(libspace.o)
+    0x20000090   0x00000000   Zero   RW            2    HEAP                startup.o
+    0x20000090   0x00000400   Zero   RW            1    STACK               startup.o
 
 
 ==============================================================================
@@ -686,14 +666,14 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-      1276        200          0         32          0       4170   main.o
+       788        130          0         48          0       2555   main.o
        124          6          0          0          0       1803   pll.o
        692        632          0          0       1024        860   startup.o
-        78          0          0          0          0       1244   systick.o
-       388         72          0          0          0       4784   uart.o
+        24          0          0          0          0        343   systick.o
+       346         72          0          0          0       4360   uart.o
 
     ----------------------------------------------------------------------
-      2560        910         32         32       1024      12861   Object Totals
+      1976        840         32         48       1024       9921   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          2          0          0          0          0          0   (incl. Padding)
 
@@ -742,15 +722,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      2832        926         32         32       1120      12293   Grand Totals
-      2832        926         32         32       1120      12293   ELF Image Totals
-      2832        926         32         32          0          0   ROM Totals
+      2248        856         32         48       1120       9769   Grand Totals
+      2248        856         32         48       1120       9769   ELF Image Totals
+      2248        856         32         48          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 2864 (   2.80kB)
-    Total RW  Size (RW Data + ZI Data)              1152 (   1.13kB)
-    Total ROM Size (Code + RO Data + RW Data)       2896 (   2.83kB)
+    Total RO  Size (Code + RO Data)                 2280 (   2.23kB)
+    Total RW  Size (RW Data + ZI Data)              1168 (   1.14kB)
+    Total ROM Size (Code + RO Data + RW Data)       2328 (   2.27kB)
 
 ==============================================================================
 
