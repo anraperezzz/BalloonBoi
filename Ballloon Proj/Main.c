@@ -15,21 +15,19 @@
 
 // 2. Declarations Section
 //   Global Variables
-uint8_t i = 0;
-int command = 0;
-int height = 0;
-int left = 0;
-int right = 0;
-int pIndex = 0;
+int state = 0;
+
 // char rxChar[4];//for PC application,uncomment this
-char message[5];
-char packet[5];
+char final_message[5]; 
+char data_packet[5];
 unsigned int go;
 unsigned int per;
 unsigned int duty;
 
-
+uint16_t com_SPI0(uint16_t address, uint16_t data, uint16_t code);
+void UART2_Handler();
 void PWM_Init(uint16_t period, uint16_t duty); 
+void SPI0_Setup(void);
 void MPU_9250_Init();
 void PWM_PF23_Duty(uint16_t duty); 
 void PWM_PF1_Duty(uint16_t duty);
@@ -39,35 +37,115 @@ void PORTB_Init(void);
 void EnableInterrupts(void);
 unsigned long to_number(char string[4]); 
 
-void UART2_Handler(){//this interrupt routine is for receiving data from bluetooth
-		packet[pIndex] = UART2_DR_R;
-		pIndex++;
-		if (pIndex == 5) {
-			go = 1;
-			pIndex = 0;
+
+
+
+
+int main(void){ int delay;
+	uint16_t spi;
+	go = 0;
+	PLL_Init();
+	UART2_Init();
+	UART3_Init();
+	SPI0_Setup();
+	MPU_9250_Init();
+	SysTick_Init(8000000);
+	per = 0x0FA0; // fa0 20KHz
+	duty = 0x0000;	// 7d0 50%
+	PWM_Init( per, duty);
+  while(1){
+
+
+
+		if (go == 1){
+			UART3_OutString(final_message);
+			go = 0;
+			//height = (height * 0x0F9F) / 3;
+			//left = (left * 0x0F9F) / 7;
+			//right = (right * 0x0F9F) / 7;			
 		}
-		//command = UART2_DR_R;
-		//height = (command & 0x00C0) >> 6;
-		//left =   (command & 0x0038) >> 3;
-		//right =  command & 0x0007;
-    /* rxChar[i] = UART2_DR_R;
-		UART3_OutChar(rxChar[i]);
-		i++;
-		if(rxChar[i-1]==13){	// If carriage return
-			rxChar[i-1]='\0';
-			i=0;
-			go = 1;
-		}
-		*/
 		/*
-		if(rxChar[i-1]==42){	// If *
-			rxChar[i-1]='\0';
-			i=0;
-			go = 2;
+		if (go == 2){
+			go = 0;
 		}
 		*/
+		//receive = read_SPI0(0xC100); // 1100 0011 0000 0000
+		//receive &= 0x00FF;
+		//UART3_OutUDec(receive);UART3_OutString("\r\n");
+		/*
+		//Find out if first letter is f or b 
+		UART3_OutString("Input Value:"); 
+		UART2_InString(string, 5);  OutCRLF3(); 
 		
-		UART2_ICR_R=UART_ICR_RXIC;//clear interrupt
+		if (string[0] == 'f'){
+			frequency = to_number(string);
+			UART3_OutUDec(frequency); OutCRLF2();
+		}
+		
+		else{
+			pwm_value = to_number(string);
+			if(pwm_value > 255){
+				UART3_OutString("b out of range. Try Again from 0 - 255:\r\n");
+				pwm_value = last_pwm_value;
+			}
+			else if(pwm_value==0){
+				pwm_value = 0;
+				last_pwm_value = pwm_value;
+			}
+			else{
+				pwm_value = (int)((((float)pwm_value/255)*38000)+ 1000 - 3);
+				last_pwm_value = pwm_value;
+			}
+			PWM_PF2_Duty(pwm_value);  
+		}
+		*/
+	}
+}
+
+void UART2_Handler(){
+		NVIC_ST_CTRL_R &=  ~NVIC_ST_CTRL_ENABLE;//Disable systick
+		NVIC_ST_CURRENT_R = 0; //Writing clears count register
+		data_packet[state] = UART2_DR_R; //read from uart2 to register 
+		switch (state){
+			case 0:
+			{
+				if (data_packet[state] == 0x24){ 
+					state++;
+					NVIC_ST_CTRL_R |= NVIC_ST_CTRL_ENABLE; //Enable systick
+				}
+				else{state = 0;} // Start Over
+				break;
+			}
+			case 4: 
+			{
+				char checksum = (char)(data_packet[0] + data_packet[1] + data_packet[2] + data_packet[3]);
+				if (checksum == data_packet[4]){					
+					final_message[0] = data_packet[0];
+					final_message[1] = data_packet[1];
+					final_message[2] = data_packet[2];
+					final_message[3] = data_packet[3];
+					final_message[4] = data_packet[4];
+					go = 1;
+				}
+				state = 0;
+				data_packet[0] = 0;
+				data_packet[1] = 0;
+				data_packet[2] = 0;
+				data_packet[3] = 0;
+				data_packet[4] = 0;
+					
+				break;
+			}
+			default:
+			{
+				if ((NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT) != NVIC_ST_CTRL_COUNT){
+					state++;
+					NVIC_ST_CTRL_R |= NVIC_ST_CTRL_ENABLE; //Enable systick
+				}
+				else {state = 0;}
+			}
+	}	
+		UART2_ICR_R = UART_ICR_RXIC;//clear interrupt
 }
 
 void PORTB_Init(void){ 
@@ -116,7 +194,6 @@ uint16_t com_SPI0(uint16_t address, uint16_t data, uint16_t code){uint16_t recei
     receive = SSI0_DR_R;    					// Data in
 		receive &= 0x00FF;
     return receive;
-
 }
 
 void MPU_9250_Init(){uint16_t rx;
@@ -127,33 +204,15 @@ void MPU_9250_Init(){uint16_t rx;
 	com_SPI0(0x1B, 0x10, 0x00);	// Configure gyroscope range 1000dps
 	com_SPI0(0x1C, 0x08, 0x00); // Configure accelerometers range 4G
 	
-	rx = com_SPI0(0x6A, 0x00, 0x80);
-	UART3_OutString("Test:\n\r");
-	UART3_OutUDec(rx);UART3_OutString("\r\n");
-	rx = com_SPI0(0x1D, 0x00, 0x80);
-	UART3_OutString("Test:\n\r");
-	UART3_OutUDec(rx);UART3_OutString("\r\n");
-	rx = com_SPI0(0x1A, 0x00, 0x80);
-	UART3_OutString("Test:\n\r");
-	UART3_OutUDec(rx);UART3_OutString("\r\n");
-	
-	rx = com_SPI0(0x1B, 0x00, 0x80);
-	UART3_OutString("Test:\n\r");
-	UART3_OutUDec(rx);UART3_OutString("\r\n");
-	rx = com_SPI0(0x1C, 0x00, 0x80);
-	UART3_OutString("Test:\n\r");
-	UART3_OutUDec(rx);UART3_OutString("\r\n");
-	
-	
+	//rx = com_SPI0(0x6A, 0x00, 0x80);	// Example of reading
+	//UART3_OutString("Test:\n\r");
 }
 
 void PWM_Init(uint16_t period, uint16_t duty){volatile unsigned long delay;
 	// This function enables PF 1, 2, 3 and PA6. NOTE: this function assumes that the clock is 80MHz
 	// Generator 1, Generator 2, Generator 3
 	// PA6(L)			  PF1(R)			 PF2,3(UP)
-	
 	SYSCTL_RCGCPWM_R  |= 0x02;			// Enable and provide a clock to PWM module 1 in Run mode
-	
 	SYSCTL_RCGCGPIO_R |= 0x21;		  // Enable and provide a clock to GPIO Port F and A in Run mode
 
 	while((SYSCTL_PRGPIO_R&0x21) == 0){};   // Wait for clock
@@ -172,31 +231,20 @@ void PWM_Init(uint16_t period, uint16_t duty){volatile unsigned long delay;
 	
 	PWM1_3_GENA_R |= 0x0042;					// When load start High PF2,3
 	PWM1_3_GENB_R |= 0x0402;					// When load start High PF2,3
-	
 	PWM1_2_GENB_R |= 0x0402;					// When load start High PF1
-	
 	PWM1_1_GENA_R |= 0x0042;					// When load start High PA6
 	
-	
 	PWM1_3_LOAD_R = period - 1;			// Load value (20KHz) PF2,3
-	
 	PWM1_2_LOAD_R = period - 1;			// Load value (20KHz) PF1
-	
 	PWM1_1_LOAD_R = period - 1;			// Load value (20KHz) PA6
-	
 	
 	PWM1_3_CMPA_R = duty - 1;				// Duty PF2
 	PWM1_3_CMPB_R = duty - 1;				// Duty PF3
-	
 	PWM1_2_CMPB_R = duty - 1;				// Duty PF1
-	
 	PWM1_1_CMPA_R = duty - 1;				// Duty PA6
 	
-	
 	PWM1_3_CTL_R |= 0x00000001;			// Start Timer PF2,3
-	
 	PWM1_2_CTL_R |= 0x00000001;			// Start Timer PF1
-	
 	PWM1_1_CTL_R |= 0x00000001;			// Start Timer PA6 count up
 	
 	PWM1_ENABLE_R |= 0xE4;					// Enable Output from module 1
@@ -214,126 +262,7 @@ void PWM_PF1_Duty(uint16_t duty){
 void PWM_PA6_Duty(uint16_t duty){
 	PWM1_1_CMPA_R = duty - 1;				// Duty PA6
 }
-int main(void){ int delay;
-	uint16_t spi;
-	unsigned char checksum;
-	//char string[5]; 
-	go = 0;
-	//unsigned long pwm_value, last_pwm_value, frequency;
-	PLL_Init();
-	UART2_Init();
-	UART3_Init();
-	SysTick_Init();
-	SPI0_Setup();
-	PWM_Init( per, duty);
-	//MPU_9250_Init();
-	per = 0x0FA0; // fa0 20KHz
-	duty = 0x0000;	// 7d0 50%
-	//message[0] = '$';
-	//message[1] = 'C';
-	//message[2] = 'C';
-	//message[3] = 'D';
-	//checksum = (char)(message[0] + message[1] + message[2] + message[3]);
-	//message[4] = (char) checksum ;
-	//UART3_OutString(message);
-	
-  
-  while(1){
-		
-		//while((UART3_FR_R&UART_FR_TXFF) != 0);
-		//UART3_DR_R = 0xA5;
-		//while((UART3_FR_R&UART_FR_TXFF) != 0);
-		//UART3_DR_R = 74;
-		
-		//SysTick_Wait1us(500000);
-		
-		//UART3_OutString("$969!");
-		//SysTick_Wait1us(1000000);
-		//UART3_OutString("$20!!");
-		//UART3_OutString("Test:\n\r");
-		//UART3_OutUDec(com_SPI0(0x43, 0x00, 0x80));UART3_OutString("\r\n");
-		//SysTick_Wait1us(1000000);
 
-
-
-		if (go == 1){
-			UART3_OutString(packet);
-			//NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
-			//duty = (to_number(rxChar) * ((per-1))) / (255);
-			//UART3_OutString(rxChar);
-			/*
-			UART3_OutUDec(height);
-			UART3_OutString("\n\r");
-			UART3_OutUDec(left);
-			UART3_OutString("\n\r");
-			UART3_OutUDec(right);
-			UART3_OutString("\n\r");
-			*/
-			//height = (height * 0x0F9F) / 3;
-			//left = (left * 0x0F9F) / 7;
-			//right = (right * 0x0F9F) / 7;
-			/*
-			UART3_OutUDec(command);
-			UART3_OutString("\n\r");
-			UART3_OutUDec(height);
-			UART3_OutString("\n\r");
-			UART3_OutUDec(left);
-			UART3_OutString("\n\r");
-			UART3_OutUDec(right);
-			*/
-			//PWM_PF23_Duty(height);
-			//PWM_PA6_Duty(left);
-			//PWM_PF1_Duty(right);
-			//UART3_OutUDec(duty);
-			//UART3_OutString("--->");
-			//UART3_OutUDec();
-			
-			//UART3_OutString("\n\rInput Command:\n\r");
-			go = 0;
-			
-		}
-		/*
-		if (go == 2){
-			receive = read_SPI0(0xC100); // 1100 0101 0000 0000
-			receive &= 0x00FF;//0x00FF;
-			UART3_OutString("SPI--->");
-			UART3_OutUDec(receive);
-			UART3_OutString("\n\rInput Command:\n\r");
-			go = 0;
-		}
-		*/
-		//receive = read_SPI0(0xC100); // 1100 0011 0000 0000
-		//receive &= 0x00FF;
-		//UART3_OutUDec(receive);UART3_OutString("\r\n");
-		/*
-		//Find out if first letter is f or b 
-		UART3_OutString("Input Value:"); 
-		UART2_InString(string, 5);  OutCRLF3(); 
-		
-		if (string[0] == 'f'){
-			frequency = to_number(string);
-			UART3_OutUDec(frequency); OutCRLF2();
-		}
-		
-		else{
-			pwm_value = to_number(string);
-			if(pwm_value > 255){
-				UART3_OutString("b out of range. Try Again from 0 - 255:\r\n");
-				pwm_value = last_pwm_value;
-			}
-			else if(pwm_value==0){
-				pwm_value = 0;
-				last_pwm_value = pwm_value;
-			}
-			else{
-				pwm_value = (int)((((float)pwm_value/255)*38000)+ 1000 - 3);
-				last_pwm_value = pwm_value;
-			}
-			PWM_PF2_Duty(pwm_value);  
-		}
-		*/
-	}
-}
 
 unsigned long to_number(char string[4]){
 	int i;  

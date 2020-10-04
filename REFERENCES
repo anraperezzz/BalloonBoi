@@ -1,0 +1,30 @@
+HANDY DANDY REFERENCES LIST:
+
+
+BATTERY MANAGEMENT SYSTEM
+
+	WEBBENCH BATTERY MANAGEMENT - https://webench.ti.com/power-designer/switching-regulator/select
+	TP4056 - https://www.best-microcontroller-projects.com/tp4056.html
+
+
+TP4056
+
+	DATA MANUAL - https://www.ti.com/lit/ds/symlink/tm4c123gh6pm.pdf
+	CIRCUIT - https://www.ti.com/lit/ug/spmu296/spmu296.pdf
+
+
+ANDROID STUDIO
+
+	BLUETOOTH SEND AND RECEIVE - https://wingoodharry.wordpress.com/2014/04/15/android-sendreceive-data-with-arduino-using-bluetooth-part-2/
+	ANDROID HANDLER TIMER - https://stackoverflow.com/questions/4597690/how-to-set-timer-in-android
+	CONNECT TO HC05 - https://gist.github.com/six519/d1a9ba6844be230c9d4d1e0e187be82d
+	SEND AND RECEIVE(UTILIZED) - https://stackoverflow.com/questions/45140098/how-to-send-receive-messages-via-bluetooth-android-studio
+							   - http://findnerd.com/list/view/Send-and-Receive-Data-Using-Sockets-Via-Bluetooth-in-Android-Device---5-Steps/34354/
+	BLUETOOTH CONNECT TUTORIAL - https://www.instructables.com/id/Android-Bluetooth-Control-LED-Part-2/
+	IN DEPTH BLUETOOTH(FUTURE?) - https://www.codeproject.com/Articles/814814/Android-Connectivity
+	GEEKS HC05 TUTORIAL - https://www.geeksforgeeks.org/all-about-hc-05-bluetooth-module-connection-with-android/
+	
+
+COMPONENTS
+
+	MOSFET - https://assets.nexperia.com/documents/data-sheet/PMV16XN.pdf

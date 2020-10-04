@@ -45,28 +45,31 @@
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
 
 // Initialize SysTick with busy wait running at bus clock.
-void SysTick_Init(void){
+void SysTick_Init(unsigned long period){
   NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
-  NVIC_ST_RELOAD_R = NVIC_ST_RELOAD_M;  // maximum reload value
+  NVIC_ST_RELOAD_R = period-1;					// reload value
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it
                                         // enable SysTick with core clock
-  NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC;
+  
+	
+	NVIC_ST_CTRL_R = NVIC_ST_CTRL_CLK_SRC;// Clock source, but don't enable
 }
+
 // Time delay using busy wait.
 // The delay parameter is in units of the core clock. (units of 62.5 nsec for 80 MHz clock)
-void SysTick_Wait(unsigned long delay){
-  volatile unsigned long elapsedTime;
-  unsigned long startTime = NVIC_ST_CURRENT_R;
-  do{
-    elapsedTime = (startTime-NVIC_ST_CURRENT_R)&0x00FFFFFF;
-  }
-  while(elapsedTime <= delay);
-}
+//void SysTick_Wait(unsigned long delay){
+  //volatile unsigned long elapsedTime;
+  //unsigned long startTime = NVIC_ST_CURRENT_R;
+  //do{
+    //elapsedTime = (startTime-NVIC_ST_CURRENT_R)&0x00FFFFFF;
+  //}
+  //while(elapsedTime <= delay);
+//}
 // Time delay using busy wait.
 // This assumes 16 MHz system clock.
-void SysTick_Wait1us(unsigned long delay){
-  unsigned long i;
-  for(i=0; i<delay; i++){
-    SysTick_Wait(80);  // wait 1us (assumes 16 MHz clock) 16
-  }
-}
+//void SysTick_Wait1us(unsigned long delay){
+  //unsigned long i;
+  //for(i=0; i<delay; i++){
+    //SysTick_Wait(80);  // wait 1us (assumes 16 MHz clock) 16
+  //}
+//}
