@@ -27,6 +27,9 @@ unsigned int duty;
 
 void Wait100msX(int rep);
 uint16_t com_SPI0(uint16_t address, uint16_t data, uint16_t code);
+void write_SPI0(uint16_t address, uint16_t data);
+uint16_t read_SPI0(uint16_t address);
+void read_Mult_SPI0(uint16_t address, uint8_t *ReadBuf, int bytes);
 void UART2_Handler();
 void PWM_Init(uint16_t period, uint16_t duty); 
 void SPI0_Setup(void);
