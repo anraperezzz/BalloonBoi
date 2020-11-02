@@ -1,12 +1,28 @@
 HANDY DANDY REFERENCES LIST:
 
+COLOR SCHEME 
 
+	FIRE PALLETTE - https://www.schemecolor.com/fire-color-scheme.php
+	
+	
 BATTERY MANAGEMENT SYSTEM
 
 	WEBBENCH BATTERY MANAGEMENT - https://webench.ti.com/power-designer/switching-regulator/select
 	TP4056 - https://www.best-microcontroller-projects.com/tp4056.html
 
+MPU 9250 
 
+	ARDUINO REFERENCE - http://www.seeedstudio.com/blog/2019/12/09/getting-started-with-mpu-9250-arduino-guide/
+					  - https://create.arduino.cc/projecthub/30503/using-the-mpu9250-to-get-real-time-motion-data-08f011
+					  - https://bitbucket.org/cinqlair/mpu9250/src/master/arduino/mpuarduino.ino
+					  - https://playground.arduino.cc/Main/MPU-6050/#sketch
+					  
+	SETUP - https://learn.sparkfun.com/tutorials/mpu-9250-hookup-guide/all
+	
+	MAGNETOMETER CONVERSION - https://stackoverflow.com/questions/35600583/how-do-i-convert-raw-xyz-magnetometer-data-to-a-heading
+	GYRO CONVERSION - https://stackoverflow.com/questions/12298481/use-a-gyro-accelerometer-with-arduino#:~:text=So%20to%20translate%20your%20raw%20gyroscope%20values%20to,in%20g%20%28the%20force%20exerted%20by%20the%20earth%29.
+
+	
 TP4056
 
 	DATA MANUAL - https://www.ti.com/lit/ds/symlink/tm4c123gh6pm.pdf
@@ -15,8 +31,12 @@ TP4056
 
 ANDROID STUDIO
 
+	CLONE BYTE ARRAY - https://stackoverflow.com/questions/3208899/how-do-i-clone-a-java-byte-array
+
 	BLUETOOTH SEND AND RECEIVE - https://wingoodharry.wordpress.com/2014/04/15/android-sendreceive-data-with-arduino-using-bluetooth-part-2/
+	
 	ANDROID HANDLER TIMER - https://stackoverflow.com/questions/4597690/how-to-set-timer-in-android
+	
 	CONNECT TO HC05 - https://gist.github.com/six519/d1a9ba6844be230c9d4d1e0e187be82d
 	SEND AND RECEIVE(UTILIZED) - https://stackoverflow.com/questions/45140098/how-to-send-receive-messages-via-bluetooth-android-studio
 							   - http://findnerd.com/list/view/Send-and-Receive-Data-Using-Sockets-Via-Bluetooth-in-Android-Device---5-Steps/34354/
@@ -24,7 +44,37 @@ ANDROID STUDIO
 	IN DEPTH BLUETOOTH(FUTURE?) - https://www.codeproject.com/Articles/814814/Android-Connectivity
 	GEEKS HC05 TUTORIAL - https://www.geeksforgeeks.org/all-about-hc-05-bluetooth-module-connection-with-android/
 	
+	SET SCREEN ORIENTATION - https://android-coffee.com/tutorial-set-the-screen-orientation-in-android-using-android-studio/
+	
+	SET VISIBILITY - https://stackoverflow.com/questions/6173400/how-to-hide-a-button-programmatically
+	HIDE BUTTON FROM OTHER ACTIVITY - https://stackoverflow.com/questions/35455874/android-hide-button-from-another-activity
+	
+	ANDROID VIRTUAL JOYSTICK - https://github.com/controlwear/virtual-joystick-android
+	JOYSTICK DEMO - https://github.com/controlwear/virtual-joystick-demo
+	THANKS - https://stackoverflow.com/questions/39964718/virtual-joystick-in-android-sdk
+	
+	ANDROID USBCAMERA - https://github.com/jiangdongguo/AndroidUSBCamera
+	
+	CLOSE ACTIVITY - https://stackoverflow.com/questions/15393899/how-to-close-activity-and-go-back-to-previous-activity-in-android
+	
+	HIDE BUTTON FROM OTHER ACTIVITY - https://stackoverflow.com/questions/35455874/android-hide-button-from-another-activity
+	HIDE BUTTON PROGRAMMATICALLY - https://stackoverflow.com/questions/6173400/how-to-hide-a-button-programmatically
+	
+	SEEKBAR - https://www.javatpoint.com/android-seekbar-example
+	SEEKBAR COLOR - https://stackoverflow.com/questions/45802368/change-seekbar-color/45803715
+	
+	CAPTURE AND READ BUG REPORTS - https://developer.android.com/studio/debug/bug-report
+	
+	CUSTOM BUTTONS - https://codinginflow.com/tutorials/android/custom-button-with-images
+	
+	
+JAVA
 
+	CONVERT SHORTY - https://stackoverflow.com/questions/736815/2-bytes-to-short-java
+	COMPARE STRINGS - https://www.tutorialspoint.com/javaexamples/string_compare.htm
+	
+	
+	
 COMPONENTS
 
 	MOSFET - https://assets.nexperia.com/documents/data-sheet/PMV16XN.pdf
